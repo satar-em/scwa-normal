@@ -24,7 +24,7 @@ export default function FAB(props: any) {
                 {props.children}
             </Material.Popover>
             <Material.Fab color={"primary"} style={{margin: 10, position: "fixed", right: 0, bottom: 0}}
-                          onClick={onClickFAB} aria-describedby={"emami-id"}>
+                          onClick={onClickFAB}>
                 {props.showChat ? <MaterialIcons.Close/> : <MaterialIcons.Chat/>}
             </Material.Fab>
         </div>

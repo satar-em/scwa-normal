@@ -9,6 +9,14 @@ export default function ChatBox(props: any) {
     const onClickFAB = () => {
         if (props.onclickFAB) props.onclickFAB();
     }
+    const setWebSocket= (webSocket:WebSocket|null) => {
+        state.webSocket=webSocket
+        setState({...state})
+    }
+    const setConnectionStatus= (status:boolean) => {
+        state.connectedStatus=status
+        setState({...state})
+    }
     return (
         <div style={{userSelect: "none"}}>
             <Material.Box
@@ -41,14 +49,14 @@ export default function ChatBox(props: any) {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            overflow:"auto"
+                            overflow:"auto",
                         }}>
-                            <ChatMessage connectionStatus={state.connectedStatus}/>
+                            <ChatMessage webSocket={state.webSocket} setConnectionStatus={setConnectionStatus} connectionStatus={state.connectedStatus} setWebSocket={setWebSocket}/>
                         </div>
                     </div>
                     <div>
-                        <div className="bg-light"
-                             style={{height: 70, display: "flex", alignItems: "center", justifyContent: "center"}}>
+                        <div
+                             style={{height: 70, display: "flex", alignItems: "center", justifyContent: "center",backgroundColor:"#ffffff"}}>
                             {state.connectedStatus?
                                 <div className="row" style={{width: "100%"}}>
                                 <div className="col-10">
