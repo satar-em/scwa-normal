@@ -14,7 +14,7 @@ export default function Chat(props: any) {
         onChangeShowChat()
     }, [state.showChat])
     const onclickFAB = () => {
-        state.showChat = !state.showChat
+        state.showChat = true
         setState({...state})
     }
     const onCloseChatBox = () => {
@@ -27,7 +27,7 @@ export default function Chat(props: any) {
     return (
         <div>
             <FAB onclickFAB={onclickFAB} showChat={state.showChat} onCloseChatBox={onCloseChatBox}>
-                <ChatBox showChat={state.showChat}/>
+                <ChatBox onCloseChatBox={onCloseChatBox} showChat={state.showChat}/>
             </FAB>
         </div>
     );

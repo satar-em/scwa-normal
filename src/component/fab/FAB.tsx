@@ -20,8 +20,7 @@ export default function FAB(props: any) {
                     horizontal: 'right',
                 }}
                 anchorEl={anchorEl}
-                open={props.showChat}
-                onClose={props.onCloseChatBox}>
+                open={props.showChat}>
                 {props.children}
             </Material.Popover>
             <Material.Fab color={"primary"} style={{margin: 10, position: "fixed", right: 0, bottom: 0}}
