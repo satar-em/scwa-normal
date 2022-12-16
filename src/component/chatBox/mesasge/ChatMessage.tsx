@@ -7,7 +7,7 @@ import {useEffect} from "react";
 
 export default function ChatMessage(props: ChatMessageProps) {
     const [state, setstate] = React.useState({
-        tryToConnect: false, socketMessage: [] as any[]
+        tryToConnect: false, socketMessage: [] as any[],clientId:""
     })
     React.useEffect(() => {
         if (!props.webSocket) return;
@@ -18,7 +18,16 @@ export default function ChatMessage(props: ChatMessageProps) {
             props.setConnectionStatus(false)
         }
         props.webSocket.onmessage = (ev: MessageEvent) => {
-            state.socketMessage.push(ev.data)
+            try {
+                const chatObjectMessage0=JSON.parse(ev.data) as ChatObjectMessage
+                if (chatObjectMessage0.messageType==="SetClientId")
+                    state.clientId=chatObjectMessage0.to
+                else {
+                    state.socketMessage.push(ev.data)
+                }
+            }catch (e) {
+
+            }
             setstate({...state})
         }
     }, [props.webSocket])
@@ -32,7 +41,7 @@ export default function ChatMessage(props: ChatMessageProps) {
             {!state.tryToConnect ?
                 <UiTryToConnect openWebSocket={openWebSocket}/>
                 :
-                props.connectionStatus ? <ChatObjectUi chatObject={state.socketMessage}/> :
+                props.connectionStatus ? <ChatObjectUi chatObject={state.socketMessage} clientId={state.clientId}/> :
                     <TryToConnect/>
             }
         </div>
@@ -84,13 +93,12 @@ function TryToConnect() {
 }
 
 function ChatObjectUi(props: any) {
+    const myId=props.clientId
+    const ChatObjectMessages=props.chatObject.map((item: any) =>JSON.parse(item)as ChatObjectMessage) as ChatObjectMessage[]
     return (
         <div>
-            {props.chatObject.map((item: any) =>
-                <div>
-                    {item}
-                </div>
-            )}
+            id = {props.clientId}
         </div>
     )
 }
+ interface ChatObjectMessage {messageType:string,userType:string,from:string,to:string,content:string,authentication:string}
