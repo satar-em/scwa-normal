@@ -9,13 +9,18 @@ export default function ChatBox(props: any) {
     const onClickFAB = () => {
         if (props.onclickFAB) props.onclickFAB();
     }
-    const setWebSocket= (webSocket:WebSocket|null) => {
-        state.webSocket=webSocket
+    const setWebSocket = (webSocket: WebSocket | null) => {
+        state.webSocket = webSocket
         setState({...state})
     }
-    const setConnectionStatus= (status:boolean) => {
-        state.connectedStatus=status
+    const setConnectionStatus = (status: boolean) => {
+        state.connectedStatus = status
         setState({...state})
+    }
+    const onClickCloseChatBox = () => {
+        props.onCloseChatBox()
+        if (state.webSocket)
+            state.webSocket.close()
     }
     return (
         <div style={{userSelect: "none"}}>
@@ -36,7 +41,7 @@ export default function ChatBox(props: any) {
                                 justifyContent: "center"
                             }}>
                             <Material.IconButton color="primary" style={{position: "absolute", right: 0, top: 0}}
-                                                 onClick={props.onCloseChatBox}>
+                                                 onClick={onClickCloseChatBox}>
                                 <MaterialIcons.ExpandMore/>
                             </Material.IconButton>
                             Artemis
@@ -49,36 +54,43 @@ export default function ChatBox(props: any) {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            overflow:"auto",
+                            overflow: "auto",
                         }}>
-                            <ChatMessage webSocket={state.webSocket} setConnectionStatus={setConnectionStatus} connectionStatus={state.connectedStatus} setWebSocket={setWebSocket}/>
+                            <ChatMessage webSocket={state.webSocket} setConnectionStatus={setConnectionStatus}
+                                         connectionStatus={state.connectedStatus} setWebSocket={setWebSocket}/>
                         </div>
                     </div>
                     <div>
                         <div
-                             style={{height: 70, display: "flex", alignItems: "center", justifyContent: "center",backgroundColor:"#ffffff"}}>
-                            {state.connectedStatus?
+                            style={{
+                                height: 70,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "#ffffff"
+                            }}>
+                            {state.connectedStatus ?
                                 <div className="row" style={{width: "100%"}}>
-                                <div className="col-10">
-                                    <Material.TextField
-                                        id="outlined-multiline-flexible"
-                                        multiline
-                                        maxRows={2}
-                                        variant="outlined"
-                                        fullWidth
-                                        placeholder="Enter Your Text"
-                                        size="small"
-                                    />
+                                    <div className="col-10">
+                                        <Material.TextField
+                                            id="outlined-multiline-flexible"
+                                            multiline
+                                            maxRows={2}
+                                            variant="outlined"
+                                            fullWidth
+                                            placeholder="Enter Your Text"
+                                            size="small"
+                                        />
+                                    </div>
+                                    <div className="col-2"
+                                         style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                        <Material.IconButton color="primary">
+                                            <MaterialIcons.Send/>
+                                        </Material.IconButton>
+                                    </div>
                                 </div>
-                                <div className="col-2"
-                                     style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                    <Material.IconButton color="primary">
-                                        <MaterialIcons.Send/>
-                                    </Material.IconButton>
-                                </div>
-                            </div>
-                            :
-                            "Artemis Group"}
+                                :
+                                "Artemis Group"}
                         </div>
                     </div>
                 </div>

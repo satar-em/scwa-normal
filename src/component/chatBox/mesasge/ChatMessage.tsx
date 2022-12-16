@@ -3,40 +3,51 @@ import * as Material from "@mui/material";
 import * as MaterialIcons from "@mui/icons-material"
 import Lottie from "lottie-react"
 import AnimateLottie from "../../../asset/lottieflow-loading.json"
+import {useEffect} from "react";
+
 export default function ChatMessage(props: ChatMessageProps) {
-    const [state,setstate]=React.useState({tryToConnect:false})
+    const [state, setstate] = React.useState({
+        tryToConnect: false, socketMessage: [] as any[]
+    })
     React.useEffect(() => {
-        if (!props.webSocket)return;
-        props.webSocket.onopen=(ev:Event)=>{
+        if (!props.webSocket) return;
+        props.webSocket.onopen = (ev: Event) => {
             props.setConnectionStatus(true)
         }
-        props.webSocket.onclose=(ev:Event)=>{
+        props.webSocket.onclose = (ev: Event) => {
             props.setConnectionStatus(false)
         }
-    },[props.webSocket])
-    const openWebSocket=()=>{
-        state.tryToConnect=true
+        props.webSocket.onmessage = (ev: MessageEvent) => {
+            state.socketMessage.push(ev.data)
+            setstate({...state})
+        }
+    }, [props.webSocket])
+    const openWebSocket = () => {
+        state.tryToConnect = true
         setstate({...state})
-        props.setWebSocket(new WebSocket("wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self"))
+        props.setWebSocket(new WebSocket("ws://192.168.1.101:8080/scwa/chat-user"))
     }
     return (
         <div style={{width: "100%", height: "100%", backgroundColor: "#ffe3e3"}}>
             {!state.tryToConnect ?
                 <UiTryToConnect openWebSocket={openWebSocket}/>
                 :
-                props.connectionStatus? <ChatObjectUi/>:<TryToConnect/>
+                props.connectionStatus ? <ChatObjectUi chatObject={state.socketMessage}/> :
+                    <TryToConnect/>
             }
         </div>
     )
 }
+
 interface ChatMessageProps {
-    webSocket:WebSocket |null
-    setWebSocket:(webSocket:WebSocket|null)=>void
-    connectionStatus:boolean
-    setConnectionStatus:(status:boolean) =>void
+    webSocket: WebSocket | null
+    setWebSocket: (webSocket: WebSocket | null) => void
+    connectionStatus: boolean
+    setConnectionStatus: (status: boolean) => void
 }
-function UiTryToConnect(props: any){
-    return(
+
+function UiTryToConnect(props: any) {
+    return (
         <div style={{height: "100%", width: "100%"}}>
             <div style={{
                 display: "flex",
@@ -55,8 +66,9 @@ function UiTryToConnect(props: any){
         </div>
     )
 }
-function TryToConnect(){
-    return(
+
+function TryToConnect() {
+    return (
         <div style={{height: "100%", width: "100%"}}>
             <div style={{
                 display: "flex",
@@ -65,15 +77,20 @@ function TryToConnect(){
                 height: "100%",
                 width: "100%"
             }}>
-                <Lottie style={{width:"50%",height:"50%"}} animationData={AnimateLottie} loop={true}/>
+                <Lottie style={{width: "50%", height: "50%"}} animationData={AnimateLottie} loop={true}/>
             </div>
         </div>
     )
 }
-function ChatObjectUi(){
-    return(
+
+function ChatObjectUi(props: any) {
+    return (
         <div>
-            Chat Object Ui
+            {props.chatObject.map((item: any) =>
+                <div>
+                    {item}
+                </div>
+            )}
         </div>
     )
 }
