@@ -7,7 +7,7 @@ import {useEffect} from "react";
 
 export default function ChatMessage(props: ChatMessageProps) {
     const [state, setstate] = React.useState({
-        tryToConnect: false, socketMessage: [] as any[],clientId:""
+        tryToConnect: false, socketMessage: [] as any[], clientId: ""
     })
     React.useEffect(() => {
         if (!props.webSocket) return;
@@ -19,13 +19,13 @@ export default function ChatMessage(props: ChatMessageProps) {
         }
         props.webSocket.onmessage = (ev: MessageEvent) => {
             try {
-                const chatObjectMessage0=JSON.parse(ev.data) as ChatObjectMessage
-                if (chatObjectMessage0.messageType==="SetClientId")
-                    state.clientId=chatObjectMessage0.to
+                const chatObjectMessage0 = JSON.parse(ev.data) as ChatObjectMessage
+                if (chatObjectMessage0.messageType === "SetClientId")
+                    state.clientId = chatObjectMessage0.to
                 else {
                     state.socketMessage.push(ev.data)
                 }
-            }catch (e) {
+            } catch (e) {
 
             }
             setstate({...state})
@@ -34,7 +34,7 @@ export default function ChatMessage(props: ChatMessageProps) {
     const openWebSocket = () => {
         state.tryToConnect = true
         setstate({...state})
-        props.setWebSocket(new WebSocket("ws://192.168.1.101:8080/scwa/chat-user"))
+        props.setWebSocket(new WebSocket("ws://192.168.1.105:8080/scwa/chat-user"))
     }
     return (
         <div style={{width: "100%", height: "100%", backgroundColor: "#ffe3e3"}}>
@@ -93,12 +93,20 @@ function TryToConnect() {
 }
 
 function ChatObjectUi(props: any) {
-    const myId=props.clientId
-    const ChatObjectMessages=props.chatObject.map((item: any) =>JSON.parse(item)as ChatObjectMessage) as ChatObjectMessage[]
+    const myId = props.clientId
+    const ChatObjectMessages = props.chatObject.map((item: any) => JSON.parse(item) as ChatObjectMessage) as ChatObjectMessage[]
     return (
         <div>
             id = {props.clientId}
         </div>
     )
 }
- interface ChatObjectMessage {messageType:string,userType:string,from:string,to:string,content:string,authentication:string}
+
+interface ChatObjectMessage {
+    messageType: string,
+    userType: string,
+    from: string,
+    to: string,
+    content: string,
+    authentication: string
+}
